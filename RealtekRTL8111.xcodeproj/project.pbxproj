@@ -289,7 +289,21 @@
 				MARKETING_VERSION = "$(MODULE_VERSION)";
 				MODULE_NAME = com.insanelymac.RealtekRTL8111;
 				MODULE_VERSION = 2.4.3;
-				OTHER_CFLAGS = "-Wno-stdlibcxx-not-found";
+				OTHER_CFLAGS = (
+					"-mmmx",
+					"-msse",
+					"-msse2",
+					"-msse3",
+					"-mfpmath=sse",
+					"-mssse3",
+					"-ftree-vectorize",
+					"-fno-non-call-exceptions",
+					"-fno-builtin",
+					"-fno-asynchronous-unwind-tables",
+					"-Wno-inconsistent-missing-override",
+					"-Wno-unknown-warning-option",
+					"-Wno-ossharedptr-misuse",
+				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
 				PRODUCT_NAME = RealtekRTL8111;
@@ -331,7 +345,21 @@
 				MARKETING_VERSION = "$(MODULE_VERSION)";
 				MODULE_NAME = com.insanelymac.RealtekRTL8111;
 				MODULE_VERSION = 2.4.3;
-				OTHER_CFLAGS = "-Wno-stdlibcxx-not-found";
+				OTHER_CFLAGS = (
+					"-mmmx",
+					"-msse",
+					"-msse2",
+					"-msse3",
+					"-mfpmath=sse",
+					"-mssse3",
+					"-ftree-vectorize",
+					"-fno-non-call-exceptions",
+					"-fno-builtin",
+					"-fno-asynchronous-unwind-tables",
+					"-Wno-inconsistent-missing-override",
+					"-Wno-unknown-warning-option",
+					"-Wno-ossharedptr-misuse",
+				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
 				PRODUCT_NAME = RealtekRTL8111;
