@@ -17,8 +17,8 @@ jobs:
     env:
       JOB_TYPE: BUILD
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: acidanthera/MacKernelSDK
           path: MacKernelSDK
@@ -30,7 +30,7 @@ jobs:
       - run: xcodebuild -scheme RealtekRTL8111-V2 -derivedDataPath . -configuration Release -arch x86_64
 
       - name: Upload to Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: Build/Products/*/*.zip
@@ -43,21 +43,21 @@ jobs:
           tag: ${{ github.ref }}
           file_glob: true
 
-#   analyze-clang:
-#     name: Analyze Clang
-#     runs-on: macos-latest
-#     env:
-#       JOB_TYPE: ANALYZE
-#     steps:
-#       - uses: actions/checkout@v3
-#       - uses: actions/checkout@v3
-#         with:
-#           repository: acidanthera/MacKernelSDK
-#           path: MacKernelSDK
-#       - name: CI Bootstrap
-#         run: |
-#           src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/ocbuild/master/ci-bootstrap.sh) && eval "$src" || exit 1
+  analyze-clang:
+    name: Analyze Clang
+    runs-on: macos-latest
+    env:
+      JOB_TYPE: ANALYZE
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: acidanthera/MacKernelSDK
+          path: MacKernelSDK
+      - name: CI Bootstrap
+        run: |
+          src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/ocbuild/master/ci-bootstrap.sh) && eval "$src" || exit 1
 
-#       - run: xcodebuild analyze -quiet -configuration Debug -arch x86_64 CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR="$(pwd)/clang-analyze" && [ "$(find clang-analyze -name "*.html")" = "" ]
-#       - run: xcodebuild clean -quiet
-#       - run: xcodebuild analyze -quiet -configuration Release -arch x86_64 CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR="$(pwd)/clang-analyze" && [ "$(find clang-analyze -name "*.html")" = "" ]
+      - run: xcodebuild analyze -quiet -configuration Debug -arch x86_64 CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR="$(pwd)/clang-analyze" && [ "$(find clang-analyze -name "*.html")" = "" ]
+      - run: xcodebuild clean -quiet
+      - run: xcodebuild analyze -quiet -configuration Release -arch x86_64 CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR="$(pwd)/clang-analyze" && [ "$(find clang-analyze -name "*.html")" = "" ]
