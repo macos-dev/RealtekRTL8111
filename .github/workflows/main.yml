@@ -26,8 +26,8 @@ jobs:
         run: |
           src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/ocbuild/master/ci-bootstrap.sh) && eval "$src" || exit 1
 
-      - run: xcodebuild -scheme RealtekRTL8111 -derivedDataPath . -configuration Debug -arch x86_64
-      - run: xcodebuild -scheme RealtekRTL8111 -derivedDataPath . -configuration Release -arch x86_64
+      - run: xcodebuild -scheme RealtekRTL8111-V2 -derivedDataPath . -configuration Debug -arch x86_64
+      - run: xcodebuild -scheme RealtekRTL8111-V2 -derivedDataPath . -configuration Release -arch x86_64
 
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v3
