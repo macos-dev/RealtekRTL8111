@@ -178,6 +178,7 @@ enum
 #define kEnableTSO4Name "enableTSO4"
 #define kEnableTSO6Name "enableTSO6"
 #define kIntrMitigateName "intrMitigate"
+#define kDisableMSIName "disableMSI"
 #define kDisableASPMName "disableASPM"
 #define kDriverVersionName "Driver_Version"
 #define kFallbackName "fallbackMAC"
@@ -248,6 +249,8 @@ private:
     bool setupMediumDict();
     bool initEventSources(IOService *provider);
     void interruptOccurred(OSObject *client, IOInterruptEventSource *src, int count);
+    void interruptSimulation(IOTimerEventSource *timer);
+
     void pciErrorInterrupt();
     void txInterrupt();
     
@@ -307,6 +310,7 @@ private:
 	
 	IOInterruptEventSource *interruptSource;
 	IOTimerEventSource *timerSource;
+	IOTimerEventSource *interruptSimulationSource;
 	IOEthernetInterface *netif;
 	IOMemoryMap *baseMap;
     volatile void *baseAddr;
@@ -369,6 +373,7 @@ private:
 
     IONetworkPacketPollingParameters pollParams;
 
+    bool disableMSI;
     bool rxPoll;
     bool polling;
 

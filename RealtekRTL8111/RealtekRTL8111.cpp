@@ -46,6 +46,7 @@ bool RTL8111::init(OSDictionary *properties)
         mediumDict = NULL;
         txQueue = NULL;
         interruptSource = NULL;
+        interruptSimulationSource = NULL;
         timerSource = NULL;
         netif = NULL;
         netStats = NULL;
@@ -65,7 +66,8 @@ bool RTL8111::init(OSDictionary *properties)
         promiscusMode = false;
         multicastMode = false;
         linkUp = false;
-        
+
+        disableMSI = false;
         rxPoll = false;
         polling = false;
         
@@ -88,8 +90,8 @@ bool RTL8111::init(OSDictionary *properties)
         linuxData.pci_dev = &pciDeviceData;
         intrMitigateValue = 0x5f51;
         lastIntrTime = 0;
-        wolCapable = false;
-        wolActive = false;
+        wolCapable = true;
+        wolActive = true;
         enableTSO4 = false;
         enableTSO6 = false;
         enableCSO6 = false;
@@ -116,6 +118,10 @@ void RTL8111::free()
         if (timerSource) {
             workLoop->removeEventSource(timerSource);
             RELEASE(timerSource);
+        }
+        if (interruptSimulationSource) {
+            workLoop->removeEventSource(interruptSimulationSource);
+            RELEASE(interruptSimulationSource);
         }
         workLoop->release();
         workLoop = NULL;
@@ -244,6 +250,10 @@ void RTL8111::stop(IOService *provider)
             workLoop->removeEventSource(timerSource);
             RELEASE(timerSource);
         }
+        if (interruptSimulationSource) {
+            workLoop->removeEventSource(interruptSimulationSource);
+            RELEASE(interruptSimulationSource);
+        }
         workLoop->release();
         workLoop = NULL;
     }
@@ -353,7 +363,8 @@ IOReturn RTL8111::enable(IONetworkInterface *netif)
     enableRTL8111();
     
     /* We have to enable the interrupt because we are using a msi interrupt. */
-    interruptSource->enable();
+    if (interruptSource)
+        interruptSource->enable();
 
     rxPacketHead = rxPacketTail = NULL;
     rxPacketSize = 0;
@@ -365,7 +376,9 @@ IOReturn RTL8111::enable(IONetworkInterface *netif)
 
     if (!revisionC)
         timerSource->setTimeoutMS(kTimeoutMS);
-    
+    if (interruptSimulationSource)
+        interruptSimulationSource->setTimeoutMS(1);
+
     result = kIOReturnSuccess;
     
     DebugLog("enable() <===\n");
@@ -390,11 +403,13 @@ IOReturn RTL8111::disable(IONetworkInterface *netif)
     isEnabled = false;
 
     timerSource->cancelTimeout();
+    if (interruptSimulationSource)
+        interruptSimulationSource->cancelTimeout();
+
     needsUpdate = false;
     txDescDoneCount = txDescDoneLast = 0;
 
     /* Disable interrupt as we are using msi. */
-    interruptSource->disable();
 
     disableRTL8111();
     
@@ -1095,6 +1110,7 @@ void RTL8111::getParams()
     OSDictionary *params;
     OSNumber *intrMit;
     OSBoolean *poll;
+    OSBoolean *noMSI;
     OSBoolean *tso4;
     OSBoolean *tso6;
     OSBoolean *csoV6;
@@ -1111,7 +1127,12 @@ void RTL8111::getParams()
         disableASPM = (noASPM) ? noASPM->getValue() : false;
         
         DebugLog("[RealtekRTL8111]: PCIe ASPM support %s.\n", disableASPM ? offName : onName);
+
+        noMSI = OSDynamicCast(OSBoolean, params->getObject(kDisableMSIName));
+        disableMSI = (noMSI) ? noMSI->getValue() : false;
         
+        IOLog("[RealtekRTL8111]: Using msi %s.\n", disableMSI ? offName : onName);
+
         poll = OSDynamicCast(OSBoolean, params->getObject(kEnableRxPollName));
         rxPoll = (poll) ? poll->getValue() : false;
         
@@ -1154,6 +1175,7 @@ void RTL8111::getParams()
         }
     } else {
         disableASPM = true;
+        disableMSI = false;
         rxPoll = true;
         enableTSO4 = true;
         enableTSO6 = true;
@@ -1261,7 +1283,7 @@ bool RTL8111::initEventSources(IOService *provider)
         }
         intrIndex++;
     }
-    if (msiIndex != -1) {
+    if (msiIndex != -1 && !disableMSI) {
         DebugLog("[RealtekRTL8111]: MSI interrupt index: %d\n", msiIndex);
         
         if (rxPoll) {
@@ -1269,13 +1291,27 @@ bool RTL8111::initEventSources(IOService *provider)
         } else {
             interruptSource = IOInterruptEventSource::interruptEventSource(this, OSMemberFunctionCast(IOInterruptEventSource::Action, this, &RTL8111::interruptOccurred), provider, msiIndex);
         }
+        if (interruptSource)
+            workLoop->addEventSource(interruptSource);
     }
-    if (!interruptSource) {
+
+    if (!interruptSource && !disableMSI) {
         IOLog("[RealtekRTL8111]: Error: MSI index was not found or MSI interrupt could not be enabled.\n");
         goto error1;
     }
-    workLoop->addEventSource(interruptSource);
-    
+
+    if (disableMSI) {
+        DebugLog("[RealtekRTL8111]: Using MSI interrupt simulation.\n");
+
+        interruptSimulationSource = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &RTL8111::interruptSimulation));
+        if (!interruptSimulationSource) {
+            IOLog("[RealtekRTL8111]: Error: MSI interrupt simulation could not be enabled.\n");
+            goto error1;
+        }
+        interruptSimulationSource->setTimeoutMS(1);
+        workLoop->addEventSource(interruptSimulationSource);
+    }
+
     if (revisionC)
         timerSource = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &RTL8111::timerActionRTL8111C));
     else
@@ -2404,6 +2440,15 @@ void RTL8111::updateStatitics()
         WriteReg32(CounterAddrLow, cmd | CounterDump);
         needsUpdate = true;
     }
+}
+
+void RTL8111::interruptSimulation(IOTimerEventSource *timer)
+{
+    if (rxPoll)
+        interruptOccurredPoll(NULL, NULL, 0);
+    else
+        interruptOccurred(NULL, NULL, 0);
+    interruptSimulationSource->setTimeoutMS(1);
 }
 
 #pragma mark --- RTL8111C specific methods ---

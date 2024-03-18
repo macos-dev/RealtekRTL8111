@@ -6,10 +6,10 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIconFile</key>
-	<string></string>
+	<key>CFBundleGetInfoString</key>
+	<string>${MODULE_VERSION}, Copyright © 2013 Laura Müller. All rights reserved.</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.insanelymac.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>${MODULE_VERSION}</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>${MODULE_VERSION}</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>RTL8111 PCIe Adapter</key>
@@ -31,7 +31,9 @@
 			<key>Driver Parameters</key>
 			<dict>
 				<key>disableASPM</key>
-				<true/>
+				<false/>
+				<key>disableMSI</key>
+				<false/>
 				<key>enableCSO6</key>
 				<true/>
 				<key>enableTSO4</key>
@@ -80,7 +82,5 @@
 	</dict>
 	<key>OSBundleRequired</key>
 	<string>Network-Root</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>10.14</string>
 </dict>
 </plist>
