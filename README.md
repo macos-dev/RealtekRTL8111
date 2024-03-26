@@ -1,7 +1,7 @@
 RTL8111 Driver for OS X
 =======================
 
-[![Build Status](https://github.com/asepms92/RealtekRTL8111/workflows/CI/badge.svg?branch=master)](https://github.com/asepms92/RealtekRTL8111/actions)
+[![Build Status](https://github.com/asepms92/RealtekRTL8111/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/asepms92/RealtekRTL8111/actions)
 
 OS X open source driver for the Realtek RTL8111/8168 family
 

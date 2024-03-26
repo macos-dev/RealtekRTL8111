@@ -274,13 +274,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(MODULE_VERSION)";
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealtekRTL8111/RealtekRTL8111-V2-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				INFOPLIST_FILE = "RealtekRTL8111/RealtekRTL8111-Info.plist";
-				INSTALL_GROUP = "$(GROUP)";
-				INSTALL_OWNER = "$(USER)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MacKernelSDK/Library/x86_64",
@@ -303,6 +302,7 @@
 					"-Wno-inconsistent-missing-override",
 					"-Wno-unknown-warning-option",
 					"-Wno-ossharedptr-misuse",
+					"-Wno-stdlibcxx-not-found",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
@@ -327,6 +327,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(MODULE_VERSION)";
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -334,8 +335,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				INFOPLIST_FILE = "RealtekRTL8111/RealtekRTL8111-Info.plist";
-				INSTALL_GROUP = "$(GROUP)";
-				INSTALL_OWNER = "$(USER)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MacKernelSDK/Library/x86_64",
@@ -359,6 +358,7 @@
 					"-Wno-inconsistent-missing-override",
 					"-Wno-unknown-warning-option",
 					"-Wno-ossharedptr-misuse",
+					"-Wno-stdlibcxx-not-found",
 				);
 				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
