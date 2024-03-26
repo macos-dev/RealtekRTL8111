@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -164,7 +164,7 @@
 		D37BD67416C605F500C255A2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Laura Müller";
 				TargetAttributes = {
 					D34D36B41AD2F62B00EEEC08 = {
@@ -304,7 +304,6 @@
 					"-Wno-ossharedptr-misuse",
 					"-Wno-stdlibcxx-not-found",
 				);
-				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
 				PRODUCT_NAME = RealtekRTL8111;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -360,7 +359,6 @@
 					"-Wno-ossharedptr-misuse",
 					"-Wno-stdlibcxx-not-found",
 				);
-				OTHER_CPLUSPLUSFLAGS = "-Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RealtekRTL8111;
 				PRODUCT_NAME = RealtekRTL8111;
 				SDKROOT = macosx;
