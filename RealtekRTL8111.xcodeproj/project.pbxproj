@@ -153,7 +153,7 @@
 			);
 			dependencies = (
 			);
-			name = "RealtekRTL8111-V2";
+			name = "RealtekRTL8111";
 			productName = RealtekRTL8111;
 			productReference = D34D36C41AD2F62B00EEEC08 /* RealtekRTL8111.kext */;
 			productType = "com.apple.product-type.kernel-extension";
